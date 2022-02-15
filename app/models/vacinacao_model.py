@@ -24,29 +24,21 @@ class VacinacaoModel(db.Model):
             "health_unity_name": self.health_unity_name
         }
 
-    @validates("cpf")
-    def validate_cpf_length(self, key, cpf):
-        if (len(cpf) != 11):
+    @validates("cpf", "name", "vaccine_name", "health_unity_name")
+    def validate(self, key, value):
+
+        if(type(value) == str and key == "cpf" and len(value) != 11):
             raise CpfLengthError("Cpf should contain 11 characters")
-        return cpf
 
-    # @validates("cpf", "name", "vaccine_name", "health_unity_name")
-    # def validate_string_fields(self, key, cpf, name, vaccine_name, health_unity_name):
-    #     if(
-    #         type(cpf) != str or
-    #         type(name) != str or
-    #         type(vaccine_name) != str or
-    #         type(health_unity_name) != str
-    #     ):
-    #         raise JustAcceptStringError("You cannot send any data that is not string")
-    #     return self
+        if (type(value) != str):
+            raise JustAcceptStringError("You cannot send any data that is not string")
 
-    # @validates("cpf", "name", "vaccine_name", "health_unity_name")
-    # def validate_keys(self, key, cpf, name, vaccine_name, health_unity_name):
-    #     if(
-    #         cpf == None or
-    #         name == None or
-    #         vaccine_name == None or
-    #         health_unity_name == None
-    #     ):
-    #         raise InvalidFieldsError("Invalid key or keys, the valid ones are: cpf, name, vaccine_name, health_unity_name")
+        if (
+            key != "cpf" and
+            key != "name" and
+            key != "vaccine_name" and
+            key != "health_unity_name"
+        ):
+            raise InvalidFieldsError("Invalid key or keys, the valid ones are: cpf, name, vaccine_name, health_unity_name")
+
+        return value

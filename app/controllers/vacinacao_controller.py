@@ -1,5 +1,5 @@
 from flask import jsonify, request, current_app
-from app.models.exc import CpfLengthError, JustAcceptStringError
+from app.models.exc import CpfLengthError, InvalidFieldsError, JustAcceptStringError
 from app.models.vacinacao_model import VacinacaoModel
 from sqlalchemy.exc import IntegrityError
 from http import HTTPStatus
@@ -21,8 +21,11 @@ def post_vaccine():
     except CpfLengthError as error:
         return {"message": str(error)}, HTTPStatus.BAD_REQUEST
 
-    # except JustAcceptStringError as error:
-    #     return {"message": str(error)}, HTTPStatus.BAD_REQUEST
+    except JustAcceptStringError as error:
+        return {"message": str(error)}, HTTPStatus.BAD_REQUEST
+
+    except InvalidFieldsError as error:
+        return {"message": str(error)}, HTTPStatus.BAD_REQUEST
 
 def get_vaccines():
     vaccines = (VacinacaoModel.query.all())
